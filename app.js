@@ -20,5 +20,5 @@ mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true
 }).then(result => {
     console.log('MongoDB connected');
-    app.listen(1999);
+    app.listen(process.env.PORT || 2999);
 }).catch(err => console.log(err));
