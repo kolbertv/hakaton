@@ -1,0 +1,16 @@
+{
+    "ignore": ["*.json", "*.scss", "*.css", "*.ejs", "*.html"],
+    "env": {
+        "MONGO_URI": "mongodb+srv://kolbert_iot:1XBHGfGeCkNF5Hc9@cluster0-sklg6.mongodb.net/test?retryWrites=true",
+        "MONGO_DB": "",
+        "MONGO_USER": "kolbert_iot",
+        "MONGO_PASSWORD": "1XBHGfGeCkNF5Hc9",
+        "MAIL_ID": "",
+        "MAIL_TOKEN": "",
+        "MAIL_HOST": "",
+        "MAIL_PORT": "",
+        "MAIL_SERVICE": "",
+        "MAIL_USER": "",
+        "TOKEN_SECRET": "SuperSecretPassword"
+    }
+}
