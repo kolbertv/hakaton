@@ -6,8 +6,14 @@ const mongoose = require('mongoose');
 
 const iotController = require('../controllers/iot');
 
+const hubControllers = require('../controllers/hub');
+
 
 const router = express.Router();
+
+router.get('/hub', hubControllers.getHub);
+
+router.post('/hub', hubControllers.postHub);
 
 router.get('/devices', iotController.getDevices);
 
