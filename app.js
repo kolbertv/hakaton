@@ -1,4 +1,4 @@
-const path = require('path');
+﻿const path = require('path');
 
 const express = require('express');
 const session = require('express-session');
@@ -24,15 +24,15 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 
-// app.use((req, res, next) => {
-//     res.setHeader('Access-Control-Allow-Origin', '*');
-//     res.setHeader(
-//         'Access-Control-Allow-Methods',
-//         'OPTIONS, GET, POST, PUT, PATCH, DELETE'
-//     );
-//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
-//     next();
-// });
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader(
+        'Access-Control-Allow-Methods',
+        'OPTIONS, GET, POST, PUT, PATCH, DELETE'
+    );
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+});
 
 
 app.use('/public', express.static(path.join(__dirname, 'public')));
@@ -60,6 +60,3 @@ mongoose.connect(process.env.MONGO_URI, {
     console.log('MongoDB connected');
     app.listen(process.env.PORT || 1999);
 }).catch(err => console.log(err));
-
-
-// document.getElementById().innerHTML('').innerHTML('')
