@@ -95,6 +95,8 @@
         }
 
         function openDevice(url, id) {
+
+        let test_url = `${url}/device/${id}`;
             fetch(test_url)
                 .then(result => {
                     return result.json
