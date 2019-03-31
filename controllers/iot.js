@@ -1,4 +1,4 @@
-const Device = require('../models/device');
+﻿const Device = require('../models/device');
 const mongoose = require('mongoose');
 
 const perf = require('performance-now');
@@ -13,7 +13,7 @@ exports.getDevices = (req, res, next) => {
         })
         .then(result => {
             if (result.length <= 0) {
-                return res.status(404).json({
+                return res.status(200).json({
                     message: 'Устройств не обнаружено'
                 });
             }
