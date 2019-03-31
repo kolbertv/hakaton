@@ -1,4 +1,4 @@
-﻿const Device = require('../models/device');
+const Device = require('../models/device');
 const mongoose = require('mongoose');
 
 const perf = require('performance-now');
@@ -22,6 +22,32 @@ exports.getDevices = (req, res, next) => {
             });
         });
 };
+
+exports.getDevice = (req, res, next) => {
+    const {id} = req.params;
+    Device.find({
+        _id: id
+    })
+    .select({
+        __v: 0
+    })
+    .then(result=>{
+        if (result.length <= 0) {
+            return res.status(404).json({
+                message: 'Запрашиваемое устройство отсутсвует'
+            });
+        }
+        return res.status(200).json({
+            message: result
+        });
+    })
+
+
+    console.log(req.params.id)
+
+   
+};
+
 
 exports.getButtons = (req, res, next) => {
     Device.find({

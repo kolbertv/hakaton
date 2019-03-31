@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Админ панель</title>
+    <link rel="stylesheet" href="/public/css/admin.css">
+</head>
+
+<body>
+
+    <div class="main__container">
+        <div class="main__title">
+            <h3>
+                <%= pageTitle%>
+            </h3>
+        </div>
+        <div class="data__container">
+            <div class="data__left-column">
+                <div class="column-title__wrap">
+                    <h4 class="column-title">
+                        Перечень подключенных хабов
+                    </h4>
+                </div>
+
+                <% if (slaves.length<=0) {%>
+
+                <div class="item-hub">
+                    <h4>Управляемые хабы отсутсвуют</h4>
+                </div>
+
+                <% } else { for (hub of slaves) { %>
+
+                <div class="item-hub" onclick="openHub('<%= hub %>')">
+                    <h4>
+                        <%= hub %>
+                    </h4>
+                </div>
+                <% } }%>
+            </div>
+
+            <div class="data__center-column" id="data__center-column">
+                <h4 class="column-title">
+                    Перечень устройств в хабе
+                </h4>
+            </div>
+            <div class="data__right-column">
+                <h4 class="column-title">
+                    Данные устройства
+                </h4>
+
+                <table class="data__right-table">
+                    <tr class="table-row">
+                        <td class="table-column_name">название</td>
+                        <td class="table-column_value" contenteditable="true">параметр</td>
+                    </tr>
+                    <tr class="table-row">
+                        <td class="table-column_name">название</td>
+                        <td class="table-column_value" contenteditable="true">параметр</td>
+                    </tr>
+                    <tr class="table-row">
+                        <td class="table-column_name">название</td>
+                        <td class="table-column_value" contenteditable="true">параметр</td>
+                    </tr>
+
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openHub(a) {
+            fetch(a + '/devices')
+                .then(result => {
+                    return (result.json())
+                })
+                .then(result => {
+                    let data = `<h4 class="column-title">Перечень устройств в хабе</h4>`;
+                    if (Array.isArray(result.message)) {
+                        for (let i = 0; i < result.message.length; i++) {
+                            data = data +
+                                `<div class="item-hub" onClick="openDevice('${a}', '${result.message[i]._id}')"><h4>${result.message[i].name}</h4></div>`
+                        }
+                    } else {
+                        data = data + `<div class="item-hub"><h4>${result.message}</h4></div>`;
+                    }
+                    document.getElementById('data__center-column').innerHTML = data;
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        }
+
+        function openDevice(url, id) {
+            fetch(test_url)
+                .then(result => {
+                    return result.json
+                })
+                .then(result => {
+                    console.log(result)
+                })
+        }
+    </script>
+
+</body>
+
+</html>

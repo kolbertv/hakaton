@@ -13,10 +13,14 @@ exports.getHub = (req, res, next) => {
             res.status(200).json({
                 message: result
             });
-
-
         })
-}
+        .catch(err=>{
+                        if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next();
+        });
+};
 
 exports.postHub = (req, res, next) => {
     const {
@@ -51,4 +55,67 @@ exports.postHub = (req, res, next) => {
             }
             next();
         });
+};
+
+exports.putHub=(req, res, next)=>{
+    const {
+        id,
+        name,
+        description,
+        temperature,
+        voltage,
+        amperage,
+        location,
+        creator,
+        slaves
+    } = req.body;
+
+    Hub.findOneAndUpdate({
+        _id: id
+    }, {
+        name: name,
+        description: description,
+        temperature: temperature,
+        voltage: voltage,
+        amperage: amperage,
+    }, {
+        new: true
+    })
+    .select({
+        data_log: 0,
+        creator: 0
+    })
+    .then(result=>{
+        console.log(result);
+        Hub.findOneAndUpdate({
+            _id: id
+        }, {
+            $push: {data_log: result},
+            $addToSet: {
+                slaves: {
+                    $each: slaves
+                }
+            }
+        },{
+            new:true
+        })
+        .select({
+            data_log: 0
+        })
+        .then(result=>{
+            res.status(200).json(result)
+        })
+        .catch(err => {
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
+        });
+    })
+    .catch(err => {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    });
 }

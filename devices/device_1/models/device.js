@@ -1,33 +1,40 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const hubSchema = new Schema({
+const deviceSchema = new Schema({
     name: {
         type: String,
         required: true,
-        default: 'IoT хаб'
+        default: 'Устройство'
     },
     model_type: {
         type: String,
         required: true,
-        default: 'hub'
+        default: null
+    },
+    name_short: {
+        type: String
     },
     description: {
-        type:String
+        type: String
     },
     status: {
         type: Boolean,
         required: true,
         default: false
     },
-    temperature: {
-        type: Number,
-    },
     voltage: {
-        type: Number,
+        type: Number
     },
     amperage: {
         type: Number
+    },
+    adjustment: {
+        type: Number
+    },
+    isOn: {
+        type: Boolean,
+        default: false
     },
     location: {
         x: {
@@ -43,6 +50,7 @@ const hubSchema = new Schema({
             type: String
         }
     },
+    params: Schema.Types.Mixed,
     creator: {
         type: Schema.Types.ObjectId,
         ref: 'User',
@@ -53,11 +61,14 @@ const hubSchema = new Schema({
     },
     master: {
         type: Schema.Types.ObjectId,
-        ref: 'Hub'
+        ref: 'Device'
     },
     slaves: [{
-        type: String
+        type: Schema.Types.ObjectId,
+        ref: 'Device'
     }]
+}, {
+    timestamps: true
 });
 
-module.exports = mongoose.model('Hub', hubSchema);
+module.exports = mongoose.model('Device', deviceSchema);

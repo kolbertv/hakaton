@@ -19,8 +19,6 @@ router.put('/hub', hubControllers.putHub);
 
 router.get('/devices', iotController.getDevices);
 
-router.get('/device/:id', iotController.getDevice);
-
 router.get('/buttons', iotController.getButtons);
 
 router.get('/button', iotController.getButton);
