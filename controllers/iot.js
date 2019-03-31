@@ -24,28 +24,30 @@ exports.getDevices = (req, res, next) => {
 };
 
 exports.getDevice = (req, res, next) => {
-    const {id} = req.params;
+    const {
+        id
+    } = req.params;
     Device.find({
-        _id: id
-    })
-    .select({
-        __v: 0
-    })
-    .then(result=>{
-        if (result.length <= 0) {
-            return res.status(404).json({
-                message: 'Запрашиваемое устройство отсутсвует'
+            _id: id
+        })
+        .select({
+            __v: 0
+        })
+        .then(result => {
+            if (result.length <= 0) {
+                return res.status(404).json({
+                    message: 'Запрашиваемое устройство отсутсвует'
+                });
+            }
+            return res.status(200).json({
+                message: result
             });
-        }
-        return res.status(200).json({
-            message: result
-        });
-    })
+        })
 
 
     console.log(req.params.id)
 
-   
+
 };
 
 
@@ -220,6 +222,36 @@ exports.getActuators = (req, res, next) => {
         });
 };
 
+exports.postActuator = (req, res, next) => {
+    const userId = '5c9d11cecef45d06d4bd0c0f';
+    const model_type = 'actuator';
+    const {
+        name,
+        status,
+        isOn
+    } = req.body;
+    const device = new Device({
+        name: name,
+        model_type: model_type,
+        status: status,
+        isOn: isOn,
+        creator: userId
+    });
+    device.save()
+        .then(result => {
+            res.status(200).json({
+                message: 'Исполнительное устройство успешно добавлена',
+                device: result
+            });
+        })
+        .catch(err => {
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
+        });
+};
+
 
 exports.getSensors = (req, res, next) => {
 
@@ -242,11 +274,45 @@ exports.getSensors = (req, res, next) => {
                 message: result
             });
         });
-
-
 };
 
+exports.postSensor = (req, res, next) => {
+    const userId = '5c9d11cecef45d06d4bd0c0f';
+    const model_type = 'sensor';
+    const {
+        name,
+        status,
+        isOn,
+        voltage,
+        amperage,
+        adjustment
+    } = req.body;
 
+    const device = new Device({
+        name: name,
+        model_type: model_type,
+        status: status,
+        isOn: isOn,
+        creator: userId,
+        voltage: voltage,
+        amperage: amperage,
+        adjustment: adjustment
+    });
+    device
+        .save()
+        .then(result => {
+            res.status(200).json({
+                message: 'Сенсор успешно добавлен',
+                device: result
+            });
+        })
+        .catch(err => {
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
+        });
+};
 
 // function getRandom(min, max) {
 //     return Math.random() * (max - min) + min;

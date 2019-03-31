@@ -31,7 +31,11 @@ router.put('/button', iotController.putButton);
 
 router.get('/actuators', iotController.getActuators);
 
+router.post('/actuator', iotController.postActuator);
+
+
 router.get('/sensors', iotController.getSensors);
 
+router.post('/sensor', iotController.postSensor);
 
 module.exports = router;

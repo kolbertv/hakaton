@@ -4,7 +4,10 @@ exports.getHub = (req, res, next) => {
 
     Hub.find({
         })
+        .select({
+        })
         .then(result => {
+            console.log(result)
             if (result.length <= 0) {
                 return res.status(404).json({
                     message: 'Устройств не обнаружено'

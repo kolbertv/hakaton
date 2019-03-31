@@ -13,7 +13,7 @@
 
     <div class="main__container">
         <div class="main__title">
-            <h3>
+            <h3 id="title">
                 <%= pageTitle%>
             </h3>
         </div>
@@ -51,7 +51,7 @@
                     Данные устройства
                 </h4>
 
-                <table class="data__right-table">
+                <table class="data__right-table" id="data-table">
                     <tr class="table-row">
                         <td class="table-column_name">название</td>
                         <td class="table-column_value" contenteditable="true">параметр</td>
@@ -88,21 +88,50 @@
                         data = data + `<div class="item-hub"><h4>${result.message}</h4></div>`;
                     }
                     document.getElementById('data__center-column').innerHTML = data;
+
                 })
                 .catch(err => {
                     console.log(err)
                 })
+
+                fetch(a + '/hub') 
+                    .then(result=>{
+                        return result.json();
+                    })
+                    .then(result=>{
+
+                        let row='';
+                        for (let key in result.message[0]) {
+                            let row_item = `<tr class="table-row">
+                            <td class="table-column_name">${key}</td>
+                            <td class="table-column_value" contenteditable="true">${result.message[0][key]}</td>
+                        </tr>`
+                            row = row +row_item;
+                        }
+                        document.getElementById('data-table').innerHTML = row;
+                        document.getElementById('title').innerHTML = result.message[0].name;
+                    })
         }
 
         function openDevice(url, id) {
 
-        let test_url = `${url}/device/${id}`;
+        let test_url = `${url}/device/${id}`
+        console.log(test_url);
             fetch(test_url)
                 .then(result => {
-                    return result.json
+                    return result.json()
                 })
                 .then(result => {
-                    console.log(result)
+
+                    let row='';
+                    for (let key in result.message[0]) {
+                        let row_item = `<tr class="table-row">
+                        <td class="table-column_name">${key}</td>
+                        <td class="table-column_value" contenteditable="true">${result.message[0][key]}</td>
+                    </tr>`
+                        row = row +row_item;
+                    }
+                    document.getElementById('data-table').innerHTML = row;
                 })
         }
     </script>
