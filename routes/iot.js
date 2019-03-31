@@ -39,3 +39,4 @@ router.get('/sensors', iotController.getSensors);
 router.post('/sensor', iotController.postSensor);
 
 module.exports = router;
+

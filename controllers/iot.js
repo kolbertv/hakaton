@@ -106,14 +106,19 @@ exports.postButton = (req, res, next) => {
     const {
         name,
         status,
-        isOn
+        isOn,
+        description
     } = req.body;
+
+    console.log(req.body)
+
     const device = new Device({
         name: name,
         model_type: model_type,
         status: status,
         isOn: isOn,
-        creator: userId
+        creator: userId,
+        description: description
     });
     device.save()
         .then(result => {
@@ -228,14 +233,16 @@ exports.postActuator = (req, res, next) => {
     const {
         name,
         status,
-        isOn
+        isOn,
+        adjustment
     } = req.body;
     const device = new Device({
         name: name,
         model_type: model_type,
         status: status,
         isOn: isOn,
-        creator: userId
+        creator: userId,
+        adjustment: adjustment
     });
     device.save()
         .then(result => {
@@ -285,7 +292,8 @@ exports.postSensor = (req, res, next) => {
         isOn,
         voltage,
         amperage,
-        adjustment
+        adjustment,
+        description
     } = req.body;
 
     const device = new Device({
@@ -296,7 +304,8 @@ exports.postSensor = (req, res, next) => {
         creator: userId,
         voltage: voltage,
         amperage: amperage,
-        adjustment: adjustment
+        adjustment: adjustment,
+        description: description
     });
     device
         .save()

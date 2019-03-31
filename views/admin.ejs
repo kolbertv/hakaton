@@ -34,7 +34,7 @@
                 <% } else { for (hub of slaves) { %>
 
                 <div class="item-hub" onclick="openHub('<%= hub %>')">
-                    <h4>
+                    <h4 class="url_source">
                         <%= hub %>
                     </h4>
                 </div>
@@ -67,6 +67,12 @@
 
                 </table>
 
+                <div class="button-wrap" id="button_wrap">
+                    <button class="button-item" onClick="addButton()">Добавить кнопку</button>
+                    <button class="button-item" onClick="addSensor()">Добавить сенсор</button>
+                    <button class="button-item" onClick="addActuator()">Добавить актуатор</button>
+                </div>
+
             </div>
         </div>
     </div>
@@ -94,45 +100,275 @@
                     console.log(err)
                 })
 
-                fetch(a + '/hub') 
-                    .then(result=>{
-                        return result.json();
-                    })
-                    .then(result=>{
+            fetch(a + '/hub')
+                .then(result => {
+                    return result.json();
+                })
+                .then(result => {
 
-                        let row='';
-                        for (let key in result.message[0]) {
-                            let row_item = `<tr class="table-row">
+                    let row = '';
+                    for (let key in result.message[0]) {
+                        let row_item =
+                            `<tr class="table-row">
                             <td class="table-column_name">${key}</td>
                             <td class="table-column_value" contenteditable="true">${result.message[0][key]}</td>
                         </tr>`
-                            row = row +row_item;
-                        }
-                        document.getElementById('data-table').innerHTML = row;
-                        document.getElementById('title').innerHTML = result.message[0].name;
-                    })
+                        row = row + row_item;
+                    }
+                    document.getElementById('data-table').innerHTML = row;
+                    document.getElementById('title').innerHTML = result.message[0].name;
+                })
         }
 
         function openDevice(url, id) {
 
-        let test_url = `${url}/device/${id}`
-        console.log(test_url);
+            let test_url = `${url}/device/${id}`
+            console.log(test_url);
             fetch(test_url)
                 .then(result => {
                     return result.json()
                 })
                 .then(result => {
 
-                    let row='';
+                    let row = '';
                     for (let key in result.message[0]) {
-                        let row_item = `<tr class="table-row">
+                        let row_item =
+                            `<tr class="table-row">
                         <td class="table-column_name">${key}</td>
                         <td class="table-column_value" contenteditable="true">${result.message[0][key]}</td>
                     </tr>`
-                        row = row +row_item;
+                        row = row + row_item;
                     }
                     document.getElementById('data-table').innerHTML = row;
                 })
+        }
+
+
+        function addButton() {
+            let row_item =
+                `<tr class="table-row">
+             <td class="table-column_name">Имя кнопки</td>
+            <td class="table-column_value source" contenteditable="true" id="name">Выключатель</td>
+             </tr>
+             <tr class="table-row">
+             <td class="table-column_name">Описание</td>
+             <td class="table-column_value source" contenteditable="true" id="description">Выключение света</td>
+              </tr>
+              <tr class="table-row">
+              <td class="table-column_name">Статус устройства</td>
+              <td class="table-column_value source" contenteditable="true" id="status">true</td>
+               </tr>
+                <tr class="table-row">
+                <td class="table-column_name">Вкл/Выкл</td>
+                <td class="table-column_value source" contenteditable="true" id="isOn">true</td>
+                 </tr>
+                 <tr class="table-row">
+                 <td class="table-column_name">Тип устройства</td>
+                 <td class="table-column_value source" contenteditable="false" id="model_type">button</td>
+                  </tr>
+                  </tr>
+                  <tr class="table-row">
+                  <td class="table-column_name">Выбрать хаб</td>
+                  <td class="table-column_value" contenteditable="false">
+                  <select id="select_hub">
+                    <option>Пункт 1</option>
+                    <option>Пункт 2</option>
+                    </select>
+                   </td>
+                   </tr>
+                 `;
+
+            document.getElementById('data-table').innerHTML = row_item;
+
+
+            let url_source = document.getElementsByClassName('url_source');
+            let url = '';
+            for (let i = 0; i < url_source.length; i++) {
+                url = url +
+                    `<option value="${url_source[i].innerHTML.trim()}">${url_source[i].innerHTML.trim()}</option>`;
+
+            }
+            document.getElementById('select_hub').innerHTML = url;
+
+            
+            document.getElementById('button_wrap').innerHTML =  `
+            <button class="button-item" onClick="addButton()">Добавить кнопку</button>
+            <button class="button-item" onClick="addSensor()">Добавить сенсор</button>
+            <button class="button-item" onClick="addActuator()">Добавить актуатор</button>
+            <button class="button-item" id="saveButton" onClick=${"safeButton(1)"}>Сохранить</button>`;
+        }
+
+        function safeButton(num) {
+            let method = '';
+            switch (num) {
+                case 1:
+                    method = 'POST'
+                    break;
+                case 2:
+                    method = 'PUT'
+                    break;
+    }
+
+                    let source = document.getElementsByClassName('source');
+                    let obj = {};
+
+                    for (let i = 0; i < source.length; i++) {
+
+                        obj[source[i].getAttribute('id')] = source[i].innerHTML;
+                    }
+
+                    console.log(JSON.stringify(obj));
+                    console.log(obj.model_type);
+                    console.log(method);
+                    console.log(document.getElementById('select_hub').value);
+
+
+                    let test_url = document.getElementById('select_hub').value + '/' + obj.model_type;
+                    // let test_url = 'localhost:2999/' + obj.model_type;
+                      fetch(test_url, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                          method: method,
+                          body: JSON.stringify(obj)
+                      })
+                      .then(result => {
+                          return result.json()
+                      })
+                      .then(result=>{
+                          console.log(result);
+                      })
+
+
+            
+        }
+
+        function addSensor() {
+            let row_item =
+                `
+            <tr class="table-row">
+            <td class="table-column_name">Имя сенсора</td>
+            <td class="table-column_value source" contenteditable="true" id="name">Температурный сенсор</td>
+             </tr>
+
+             <tr class="table-row">
+             <td class="table-column_name">Описание</td>
+             <td class="table-column_value source" contenteditable="true" id="description">Точный сенсор</td>
+              </tr>
+
+              <tr class="table-row">
+              <td class="table-column_name">Статус устройства</td>
+              <td class="table-column_value source" contenteditable="true" id="status">true</td>
+               </tr>
+
+                <tr class="table-row">
+                <td class="table-column_name">Вкл/Выкл</td>
+                <td class="table-column_value source" contenteditable="true" id="isOn">true</td>
+                 </tr>
+                 
+                 <tr class="table-row">
+                 <td class="table-column_name">Напряжение</td>
+                 <td class="table-column_value source" contenteditable="true" id="voltage">230</td>
+                  </tr>
+
+                  <tr class="table-row">
+                  <td class="table-column_name">Ток нагрузки</td>
+                  <td class="table-column_value source" contenteditable="true" id="amperage">1</td>
+                   </tr>
+                   <tr class="table-row">
+                   <td class="table-column_name">Результат измерения</td>
+                   <td class="table-column_value source" contenteditable="true" id="adjustment">20</td>
+                    </tr>
+                    <tr class="table-row">
+                    <td class="table-column_name">Тип устройства</td>
+                    <td class="table-column_value source" contenteditable="false" id="model_type">sensor</td>
+                     </tr>
+                     <tr class="table-row">
+                     <td class="table-column_name">Выбрать хаб</td>
+                     <td class="table-column_value" contenteditable="false">
+                     <select id="select_hub">
+                       <option>Пункт 1</option>
+                       <option>Пункт 2</option>
+                       </select>
+                      </td>
+                      </tr>
+                 `;
+
+            document.getElementById('data-table').innerHTML = row_item;
+
+            let url_source = document.getElementsByClassName('url_source');
+            let url = '';
+            for (let i = 0; i < url_source.length; i++) {
+                url = url +
+                    `<option value="${url_source[i].innerHTML.trim()}">${url_source[i].innerHTML.trim()}</option>`;
+
+            }
+            document.getElementById('select_hub').innerHTML = url;
+            
+            document.getElementById('button_wrap').innerHTML =  `
+            <button class="button-item" onClick="addButton()">Добавить кнопку</button>
+            <button class="button-item" onClick="addSensor()">Добавить сенсор</button>
+            <button class="button-item" onClick="addActuator()">Добавить актуатор</button>
+            <button class="button-item" id="saveButton" onClick=${"safeButton(1)"}>Сохранить</button>`;
+        }
+
+        function addActuator() {
+            let row_item =
+                `
+            <tr class="table-row">
+            <td class="table-column_name">Название регулятора</td>
+            <td class="table-column_value source" contenteditable="true" id="name">Регулятор открытия крана</td>
+             </tr>
+
+             <tr class="table-row">
+             <td class="table-column_name">Описание</td>
+             <td class="table-column_value source" contenteditable="true" id="description">Регулятор открытия крана</td>
+              </tr>
+
+              <tr class="table-row">
+              <td class="table-column_name">Статус устройства</td>
+              <td class="table-column_value source" contenteditable="true" id="status">true</td>
+               </tr>
+
+                <tr class="table-row">
+                <td class="table-column_name">Вкл/Выкл</td>
+                <td class="table-column_value source" contenteditable="true" id="isOn">true</td>
+                 </tr>
+                   <tr class="table-row">
+                   <td class="table-column_name">Результат измерения</td>
+                   <td class="table-column_value source" contenteditable="true" id="adjustment">20</td>
+                    </tr>
+                    <tr class="table-row">
+                    <td class="table-column_name">Тип устройства</td>
+                    <td class="table-column_value source" contenteditable="false" id="model_type">actuator</td>
+                     </tr>
+                     <tr class="table-row">
+                     <td class="table-column_name">Выбрать хаб</td>
+                     <td class="table-column_value" contenteditable="false">
+                     <select id="select_hub">
+                       <option>Пункт 1</option>
+                       <option>Пункт 2</option>
+                       </select>
+                      </td>
+                      </tr>
+                 `;
+
+            document.getElementById('data-table').innerHTML = row_item;
+
+            let url_source = document.getElementsByClassName('url_source');
+            let url = '';
+            for (let i = 0; i < url_source.length; i++) {
+                url = url +
+                    `<option value="${url_source[i].innerHTML.trim()}">${url_source[i].innerHTML.trim()}</option>`;
+
+            }
+            document.getElementById('select_hub').innerHTML = url;
+
+            document.getElementById('button_wrap').innerHTML =  `
+            <button class="button-item" onClick="addButton()">Добавить кнопку</button>
+            <button class="button-item" onClick="addSensor()">Добавить сенсор</button>
+            <button class="button-item" onClick="addActuator()">Добавить актуатор</button>
+            <button class="button-item" id="saveButton" onClick=${"safeButton(1)"}>Сохранить</button>`;
         }
     </script>
 

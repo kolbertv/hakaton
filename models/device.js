@@ -5,12 +5,10 @@ const deviceSchema = new Schema({
     name: {
         type: String,
         required: true,
-        default: 'Устройство'
     },
     model_type: {
         type: String,
         required: true,
-        default: null
     },
     name_short: {
         type: String
@@ -21,9 +19,11 @@ const deviceSchema = new Schema({
     status: {
         type: Boolean,
         required: true,
-        default: false
     },
     voltage: {
+        type: Number
+    },
+    isOne: {
         type: Number
     },
     amperage: {
@@ -31,10 +31,6 @@ const deviceSchema = new Schema({
     },
     adjustment: {
         type: Number
-    },
-    isOn: {
-        type: Boolean,
-        default: false
     },
     location: {
         x: {
@@ -56,9 +52,7 @@ const deviceSchema = new Schema({
         ref: 'User',
         required: true
     },
-    data_log: {
-        type: Array
-    },
+    data_log: Schema.Types.Mixed,
     master: {
         type: Schema.Types.ObjectId,
         ref: 'Device'
